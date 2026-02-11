@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>အလှဆုံး ၅ ဘာသာ Translator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #6d28d9;
+            --primary-light: #8b5cf6;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --glass: rgba(255, 255, 255, 0.95);
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --glow: 0 0 30px rgba(109, 40, 217, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', 'Pyidaungsu', sans-serif;
+            background: linear-gradient(135deg, #f5f3ff 0%, #ecfeff 50%, #fef3c7 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Floating Background Elements */
+        .floating-element {
+            position: fixed;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(109, 40, 217, 0.1), rgba(6, 182, 212, 0.1));
+            z-index: -1;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .floating-1 {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .floating-2 {
+            width: 150px;
+            height: 150px;
+            bottom: 15%;
+            right: 8%;
+            animation-delay: 2s;
+        }
+        
+        .floating-3 {
+            width: 100px;
+            height: 100px;
+            top: 50%;
+            right: 15%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: var(--shadow), var(--glow);
+            width: 100%;
+            max-width: 900px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--gradient);
+            border-radius: 30px 30px 0 0;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(109, 40, 217, 0.3);
+            position: relative;
+        }
+        
+        .logo i {
+            font-size: 36px;
+            color: white;
+        }
+        
+        .header h1 {
+            color: #1e293b;
+            font-size: 2.8rem;
+            margin-bottom: 8px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .input-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 35px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .input-section:focus-within {
+            box-shadow: 0 15px 35px rgba(109, 40, 217, 0.15);
+            transform: translateY(-5px);
+            border-color: var(--primary-light);
+        }
+        
+        .input-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            color: #475569;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .input-label i {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            gap: 15px;
+        }
+        
+        #inputText {
+            flex: 1;
+            padding: 22px 20px 22px 55px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            color: #1e293b;
+            font-family: 'Pyidaungsu', 'Poppins', sans-serif;
+        }
+        
+        #inputText:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.1);
+        }
+        
+        .input-wrapper::before {
+            content: '\f57d';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .translate-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0 35px;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            white-space: nowrap;
+            box-shadow: 0 10px 25px rgba(109, 40, 217, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .translate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(109, 40, 217, 0.5);
+        }
+        
+        .translate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .translate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .translate-btn:hover::before {
+            left: 100%;
+        }
+        
+        .translate-btn i {
+            font-size: 1.2rem;
+        }
+        
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .language-card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .language-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .language-card:nth-child(1) { border-color: #3b82f6; }
+        .language-card:nth-child(2) { border-color: #ef4444; }
+        .language-card:nth-child(3) { border-color: #10b981; }
+        .language-card:nth-child(4) { border-color: #f59e0b; }
+        .language-card:nth-child(5) { border-color: #8b5cf6; }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .flag-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .lang-info h3 {
+            font-size: 1.3rem;
+            color: #1e293b;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        
+        .lang-info p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        .result-box {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 15px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+            color: #1e293b;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+            font-family: 'Pyidaungsu', 'Poppins', sans-serif;
+        }
+        
+        .result-box.loading {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            color: transparent;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .footer {
+            text-align: center;
+            padding-top: 25px;
+            border-top: 1px solid #e2e8f0;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .stat-item i {
+            color: var(--primary);
+        }
+        
+        .powered-by {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .api-badge {
+            background: var(--gradient);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* Special card for English (full width) */
+        .english-card {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
+            border-color: #3b82f6;
+            border-width: 3px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .language-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .english-card {
+                grid-column: span 1;
+            }
+            
+            .input-wrapper {
+                flex-direction: column;
+            }
+            
+            .translate-btn {
+                padding: 18px;
+                width: 100%;
+            }
+            
+            .footer {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .stats {
+                justify-content: center;
+            }
+        }
+        
+        /* Pulsing animation for translate button */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(109, 40, 217, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Tooltip for language codes */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Success animation */
+        @keyframes success {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .success {
+            animation: success 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating background elements -->
+    <div class="floating-element floating-1"></div>
+    <div class="floating-element floating-2"></div>
+    <div class="floating-element floating-3"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-language"></i>
+            </div>
+            <h1>၅ ဘာသာ အလှဆုံး Translator</h1>
+            <p>တစ်ကြိမ်တည်းနဲ့ ဘာသာစကား ၅ မျိုးကို အလွယ်တကူ ဘာသာပြန်လိုက်ပါ</p>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-label">
+                <i class="fas fa-keyboard"></i>
+                <span>ဘာသာပြန်လိုသည့် စာသားကို ရိုက်ထည့်ပါ</span>
+            </div>
+            <div class="input-wrapper">
+                <input type="text" id="inputText" placeholder="ဥပမာ - မင်္ဂလာပါ၊ နေကောင်းလား?" autocomplete="off">
+                <button class="translate-btn pulse" onclick="translateNow()">
+                    <i class="fas fa-bolt"></i>
+                    <span>ဘာသာပြန်ရန်</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="language-grid">
+            <div class="language-card english-card">
+                <div class="card-header">
+                    <div class="flag-icon" style="background: #3b82f6; color: white;">
+                        <i class="fas fa-flag-usa"></i>
+                    </div>
+                    <div class="lang-info">
+                        <h3>English <span class="tooltip">🇺🇸<span class="tooltiptext">Language Code: en</span></span></h3>
+                        <p>အင်္ဂလိပ်ဘာသာ</p>
+                    </div>
+                </div>
+                <div id="enOutput" class="result-box">
+                    ဘာသာပြန်ရန် စာသားရိုက်ထည့်ပါ...
+                </div>
+            </div>
+            
+            <div class="language-card">
+                <div class="card-header">
+                    <div class="flag-icon" style="background: #ef4444; color: white;">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <div class="lang-info">
+                        <h3>Japanese <span class="tooltip">🇯🇵<span class="tooltiptext">Language Code: ja</span></span></h3>
+                        <p>ဂျပန်ဘာသာ</p>
+                    </div>
+                </div>
+                <div id="jpOutput" class="result-box">
+                    ဘာသာပြန်ရန် စာသားရိုက်ထည့်ပါ...
+                </div>
+            </div>
+            
+            <div class="language-card">
+                <div class="card-header">
+                    <div class="flag-icon" style="background: #10b981; color: white;">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <div class="lang-info">
+                        <h3>Korean <span class="tooltip">🇰🇷<span class="tooltiptext">Language Code: ko</span></span></h3>
+                        <p>ကိုရီးယားဘာသာ</p>
+                    </div>
+                </div>
+                <div id="krOutput" class="result-box">
+                    ဘာသာပြန်ရန် စာသားရိုက်ထည့်ပါ...
+                </div>
+            </div>
+            
+            <div class="language-card">
+                <div class="card-header">
+                    <div class="flag-icon" style="background: #f59e0b; color: white;">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <div class="lang-info">
+                        <h3>Thai <span class="tooltip">🇹🇭<span class="tooltiptext">Language Code: th</span></span></h3>
+                        <p>ထိုင်းဘာသာ</p>
+                    </div>
+                </div>
+                <div id="thOutput" class="result-box">
+                    ဘာသာပြန်ရန် စာသားရိုက်ထည့်ပါ...
+                </div>
+            </div>
+            
+            <div class="language-card">
+                <div class="card-header">
+                    <div class="flag-icon" style="background: #8b5cf6; color: white;">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <div class="lang-info">
+                        <h3>Chinese <span class="tooltip">🇨🇳<span class="tooltiptext">Language Code: zh</span></span></h3>
+                        <p>တရုတ်ဘာသာ</p>
+                    </div>
+                </div>
+                <div id="zhOutput" class="result-box">
+                    ဘာသာပြန်ရန် စာသားရိုက်ထည့်ပါ...
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="stats">
+                <div class="stat-item">
+                    <i class="fas fa-globe-asia"></i>
+                    <span>ဘာသာစကား ၅ မျိုး</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-bolt"></i>
+                    <span>အမြန်ဆုံး ဘာသာပြန်ခြင်း</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>လုံခြုံစိတ်ချရမှု</span>
+                </div>
+            </div>
+            
+            <div class="powered-by">
+                <span>Powered by</span>
+                <div class="api-badge">MyMemory Translation API</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translation function
+        async function translateNow() {
+            const text = document.getElementById('inputText').value.trim();
+            if (!text) {
+                alert("ကျေးဇူးပြု၍ ဘာသာပြန်လိုသည့် စာသားကို အရင်ရိုက်ထည့်ပါ!");
+                document.getElementById('inputText').focus();
+                return;
+            }
+
+            // Start loading animation
+            setLoading(true);
+            
+            // Add pulse animation to button
+            const btn = document.querySelector('.translate-btn');
+            btn.classList.add('pulse');
+            
+            try {
+                // Define languages to translate to
+                const languages = [
+                    { id: 'enOutput', lang: 'en', name: 'English' },
+                    { id: 'jpOutput', lang: 'ja', name: 'Japanese' },
+                    { id: 'krOutput', lang: 'ko', name: 'Korean' },
+                    { id: 'thOutput', lang: 'th', name: 'Thai' },
+                    { id: 'zhOutput', lang: 'zh', name: 'Chinese' }
+                ];
+
+                // Translate to all languages simultaneously
+                const translationPromises = languages.map(item => 
+                    getTranslation(text, 'my', item.lang)
+                );
+
+                const results = await Promise.all(translationPromises);
+                
+                // Display results with success animation
+                results.forEach((translation, index) => {
+                    const element = document.getElementById(languages[index].id);
+                    element.innerText = translation || "ဘာသာပြန်မရပါ";
+                    element.classList.add('success');
+                    
+                    // Remove success animation after it completes
+                    setTimeout(() => {
+                        element.classList.remove('success');
+                    }, 500);
+                });
+                
+                // Update stats
+                updateTranslationStats();
+                
+            } catch (error) {
+                console.error('Translation error:', error);
+                alert("ဘာသာပြန်ရာတွင် အမှားတစ်ခုဖြစ်နေပါသည်။ ကျေးဇူးပြု၍ နောက်မှထပ်ကြိုးစားပါ။");
+            } finally {
+                setLoading(false);
+                btn.classList.remove('pulse');
+            }
+        }
+
+        // API call to MyMemory Translation API
+        async function getTranslation(text, from, to) {
+            try {
+                const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                return data.responseData.translatedText;
+            } catch (error) {
+                console.error(`Error translating to ${to}:`, error);
+                return "ဘာသာပြန်မရပါ";
+            }
+        }
+
+        // Set loading state
+        function setLoading(isLoading) {
+            const resultBoxes = document.querySelectorAll('.result-box');
+            const btn = document.querySelector('.translate-btn');
+            
+            resultBoxes.forEach(box => {
+                if (isLoading) {
+                    box.innerText = "ဘာသာပြန်နေသည်...";
+                    box.classList.add('loading');
+                } else {
+                    box.classList.remove('loading');
+                }
+            });
+            
+            if (isLoading) {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>ဘာသာပြန်နေသည်...</span>';
+                btn.disabled = true;
+                btn.style.opacity = '0.8';
+            } else {
+                btn.innerHTML = '<i class="fas fa-bolt"></i><span>ဘာသာပြန်ရန်</span>';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        }
+
+        // Update translation statistics
+        function updateTranslationStats() {
+            const countElement = document.querySelector('.stat-item:nth-child(1) span');
+            const currentCount = parseInt(countElement.textContent.match(/\d+/)) || 0;
+            countElement.textContent = `ဘာသာစကား ${currentCount + 5} မျိုး`;
+        }
+
+        // Enter key support
+        document.getElementById('inputText').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                translateNow();
+            }
+        });
+
+        // Auto-focus on input when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('inputText').focus();
+            
+            // Add sample text on click for demo
+            document.getElementById('inputText').addEventListener('click', function() {
+                if (!this.value) {
+                    this.value = "မင်္ဂလာပါ၊ နေကောင်းလား?";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
